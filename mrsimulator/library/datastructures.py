@@ -2,7 +2,7 @@ class PairMultiset:
 
     def __init__(self, pairlist = None):
         import collections
-        self.counter = collections.Counter()
+        self.list = []
         if pairlist and isinstance(pairlist, list):
             self.add(pairlist)
 
@@ -27,7 +27,7 @@ class PairMultiset:
 
     def __eq__(self, other):
         if isinstance(other, PairMultiset):
-            return self.counter == other.counter
+            return sorted(self.list) == sorted(other.list)
         else:
             return False
 
@@ -45,13 +45,13 @@ class PairMultiset:
             return self
 
         if isinstance(element ,tuple) and len(element) == 2: # check if is a pair
-            self.counter.update({element:1})
+            self.list.append(element)
             return self
         else:
             raise ValueError("It can only accept a pair (tuple of length 2). Current type: %s, Current length: %s" % (element.__class__.__name__, len(element)))
 
     def to_list(self):
-        return [k for k in self.counter.keys() for i in range(0 ,self.counter.get(k))]
+        return self.list.copy()
 
     def split(self,num_split):
         output = [PairMultiset() for i in range(0,num_split)]
