@@ -22,19 +22,38 @@ class MRSimulator:
         return output
 
     @staticmethod
-    def simulate_reduce(self, ):
+    def simulate_reducer(self, groupSplit, reduce):
+        output = sum([reduce(k, g) for k,g in groupSplit])
+        MRSimulator.simulate_delay(output)
+        return output
 
-
-def shuffle(input: PairMultiset, output: SameKeyGroup):
-        pass
+    @staticmethod
+    def shuffle(all_map_output: PairMultiset):
+        groups = {}
+        for k,v in all_map_output:
+            same_key_group = groups.get(k) or SameKeyGroup(k.__class__,v.__class__,k)
+            same_key_group.add((k,v))
+            groups[k] = same_key_group
+        return groups
 
     def execute(self, input, map, reduce):
+
         if not isinstance(input, PairMultiset):
             raise ValueError("Input must be a PairMultiset instance")
-        inputSplits = input.split(self.num_mapper)
+        input_splits = input.split(self.num_mapper)
 
-        async_result = pool.apply_async(foo, ('world', 'foo'))  # tuple of args for foo
+        # Simulated map step
+        mappers = [ self.mapperPool.apply_async(MRSimulator.simulate_mapper,split,map) for split in input_splits ]
+        all_map_results = sum([m.get() for m in mappers])
 
-        # do some other stuff in the main process
-        return_val = async_result.get()  # get the return value from your function.
+        # Simulated shuffle step
+        groups = list(MRSimulator.shuffle(all_map_results).items())
+        groups_splits = [{} for i in range(0,self.num_reducer)]
+        for i in len(groups):
+            groups_splits[i % self.num_reducer].update(groups[i])
 
+        # Simulated reducer step
+        reducers = [ self.mapperPool.apply_async(MRSimulator.simulate_reducer,group_split,reduce) for group_split in group_splits]
+        output = sum([r.get() for r in reducers])
+
+        return output
