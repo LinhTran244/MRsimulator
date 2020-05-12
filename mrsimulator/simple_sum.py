@@ -12,6 +12,6 @@ def reduce(key, group: SameKeyGroup):
     return 1, sum
 
 if __name__ == '__main__':
-    raw_data = range(0,10)
+    raw_data = range(0,1000)
     pairs = PairMultiset([(1,v) for v in raw_data])
-    MRSimulator(num_mapper=10, num_reducer=10).execute(pairs,map,reduce)
+    MRSimulator(num_mapper=100, num_reducer=10).execute(pairs,map,reduce)
