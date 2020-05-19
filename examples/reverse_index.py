@@ -1,5 +1,4 @@
-from mrsimulator.library.simulator import MRSimulator
-from mrsimulator.library.datastructures import *
+from mrsimulator import MRSimulator, SameKeyGroup, PairMultiset
 
 def map(key, value):
     words = value.split(" ")
@@ -17,4 +16,4 @@ if __name__ == '__main__':
                "as an example of a text"
     lines = raw_data.split("\n")
     pairs = PairMultiset([(i, lines[i]) for i in range(0,len(lines))])
-    MRSimulator().execute(pairs,map,reduce)
+    MRSimulator(num_mapper=1,num_reducer=1).execute(pairs,map,reduce)

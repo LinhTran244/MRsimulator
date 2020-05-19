@@ -1,6 +1,5 @@
 
-from mrsimulator.library.simulator import MRSimulator
-from mrsimulator.library.datastructures import *
+from mrsimulator import MRSimulator, SameKeyGroup, PairMultiset
 
 def map(key, value):
     return key, value

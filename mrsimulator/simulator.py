@@ -1,10 +1,10 @@
-from .datastructures import *
-from .decorators import timeit
+from mrsimulator.library.datastructures import *
+from mrsimulator.library.decorators import timeit
 from multiprocessing.pool import ThreadPool as Pool
 
 import logging
 
-logging.basicConfig(format="%(threadName)s:%(message)s",level=logging.DEBUG)
+logging.basicConfig(format="%(threadName)s:%(message)s",level=logging.INFO)
 log = logging.getLogger("mrsimulator")
 
 class MRSimulator:
@@ -54,7 +54,7 @@ class MRSimulator:
             k,v = group_list[i]
             groups_splits[i % self._num_reducer].update({k:v})
 
-        MRSimulator._simulate_delay(3+len(all_map_output)/(self._num_mapper)+self._num_reducer*self._num_mapper*0.1)
+        MRSimulator._simulate_delay(2+len(all_map_output)/(self._num_mapper)+min(self._num_reducer*self._num_mapper*0.01,6+len(all_map_output)/0.01))
 
         return groups_splits
 
